@@ -1,0 +1,1455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IoT Saathi — Build Smart. Learn Fast. Shop Easy.</title>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #050a0e;
+    --bg2: #0a1520;
+    --bg3: #0f1e2d;
+    --accent: #00ff88;
+    --accent2: #00c8ff;
+    --accent3: #ff6b35;
+    --text: #e8f4f8;
+    --text-muted: #7a9bb5;
+    --border: rgba(0,255,136,0.2);
+    --glow: 0 0 20px rgba(0,255,136,0.3);
+    --glow2: 0 0 20px rgba(0,200,255,0.3);
+    --card-bg: rgba(10,21,32,0.8);
+    --nav-bg: rgba(5,10,14,0.85);
+    --grid-color: rgba(0,255,136,0.03);
+  }
+
+  [data-theme="light"] {
+    --bg: #f0f7ff;
+    --bg2: #e4f0fb;
+    --bg3: #d6e8f7;
+    --accent: #008a4b;
+    --accent2: #0077cc;
+    --accent3: #d9521a;
+    --text: #0d1f2d;
+    --text-muted: #3a5f7a;
+    --border: rgba(0,138,75,0.25);
+    --glow: 0 0 20px rgba(0,138,75,0.25);
+    --glow2: 0 0 20px rgba(0,119,204,0.25);
+    --card-bg: rgba(255,255,255,0.85);
+    --nav-bg: rgba(240,247,255,0.9);
+    --grid-color: rgba(0,138,75,0.04);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    overflow-x: hidden;
+    transition: background 0.4s ease, color 0.4s ease;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--grid-color) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
+    background-size: 40px 40px;
+    z-index: 0;
+    pointer-events: none;
+    transition: background-image 0.4s ease;
+  }
+
+  /* Global transition for theme switching */
+  *, *::before, *::after {
+    transition: background-color 0.35s ease, border-color 0.35s ease, color 0.35s ease, box-shadow 0.35s ease;
+  }
+
+  /* ─── THEME TOGGLE ─── */
+  .theme-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 0.3rem 0.8rem 0.3rem 0.5rem;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    letter-spacing: 0.5px;
+    user-select: none;
+    flex-shrink: 0;
+  }
+
+  .theme-toggle:hover { border-color: var(--accent); color: var(--accent); }
+
+  .toggle-track {
+    width: 34px; height: 18px;
+    background: var(--bg3);
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    position: relative;
+    flex-shrink: 0;
+  }
+
+  .toggle-thumb {
+    position: absolute;
+    top: 2px; left: 2px;
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: var(--glow);
+    transition: left 0.3s cubic-bezier(0.4,0,0.2,1), background 0.3s;
+  }
+
+  [data-theme="light"] .toggle-thumb {
+    left: 18px;
+    background: var(--accent2);
+    box-shadow: var(--glow2);
+  }
+
+  .toggle-icon { font-size: 0.9rem; }
+
+  /* Nav right group */
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 5%;
+    height: 70px;
+    background: var(--nav-bg);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    transition: background 0.4s ease, border-color 0.4s ease;
+  }
+
+  .logo {
+    font-family: 'Orbitron', monospace;
+    font-weight: 900;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-shadow: var(--glow);
+    text-decoration: none;
+  }
+
+  .logo span { color: var(--accent2); }
+
+  nav ul {
+    display: flex;
+    gap: 2.5rem;
+    list-style: none;
+  }
+
+  nav ul a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  nav ul a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #050a0e !important;
+    padding: 0.5rem 1.2rem;
+    border-radius: 4px;
+    font-weight: 700 !important;
+    transition: box-shadow 0.2s, background 0.2s !important;
+  }
+
+  .nav-cta:hover {
+    background: #00ffaa !important;
+    box-shadow: var(--glow);
+    color: #050a0e !important;
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    padding: 100px 5% 60px;
+    gap: 4rem;
+    z-index: 1;
+  }
+
+  .hero-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: rgba(0,255,136,0.1);
+    border: 1px solid var(--border);
+    border-radius: 50px;
+    padding: 0.4rem 1rem;
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    letter-spacing: 1px;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 0.6s ease both;
+  }
+
+  .badge-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent);
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(1.5); }
+  }
+
+  .hero h1 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(2.2rem, 4vw, 3.8rem);
+    font-weight: 900;
+    line-height: 1.1;
+    letter-spacing: -1px;
+    animation: fadeInUp 0.7s 0.1s ease both;
+  }
+
+  .hero h1 .line1 { color: var(--text); }
+  .hero h1 .line2 { color: var(--accent); text-shadow: var(--glow); }
+  .hero h1 .line3 { color: var(--accent2); text-shadow: var(--glow2); }
+
+  .hero-desc {
+    margin-top: 1.5rem;
+    color: var(--text-muted);
+    font-size: 1.05rem;
+    line-height: 1.7;
+    max-width: 500px;
+    animation: fadeInUp 0.7s 0.2s ease both;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2.5rem;
+    animation: fadeInUp 0.7s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: #050a0e;
+    padding: 0.9rem 2rem;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+  }
+
+  .btn-primary:hover {
+    background: #00ffaa;
+    box-shadow: 0 0 30px rgba(0,255,136,0.5);
+    transform: translateY(-2px);
+  }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    padding: 0.9rem 2rem;
+    border-radius: 6px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.15);
+    transition: all 0.2s;
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+    box-shadow: var(--glow2);
+    transform: translateY(-2px);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 2.5rem;
+    margin-top: 3rem;
+    animation: fadeInUp 0.7s 0.4s ease both;
+  }
+
+  .stat { text-align: center; }
+  .stat-num {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.8rem;
+    font-weight: 900;
+    color: var(--accent);
+  }
+  .stat-label {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-top: 0.2rem;
+  }
+
+  /* Hero Visual */
+  .hero-visual {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: fadeInRight 0.8s 0.2s ease both;
+  }
+
+  .hero-card {
+    position: relative;
+    width: 100%;
+    max-width: 480px;
+    aspect-ratio: 4/3;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 0 60px rgba(0,255,136,0.15), 0 30px 60px rgba(0,0,0,0.5);
+  }
+
+  .hero-card img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: hue-rotate(160deg) saturate(1.2) brightness(0.85);
+  }
+
+  .hero-card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(0,255,136,0.1) 0%, rgba(0,200,255,0.05) 100%);
+  }
+
+  .hero-card-tag {
+    position: absolute;
+    top: 1rem; left: 1rem;
+    background: rgba(0,255,136,0.9);
+    color: #050a0e;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0.3rem 0.7rem;
+    border-radius: 4px;
+    letter-spacing: 1px;
+  }
+
+  /* Floating chips */
+  .chip {
+    position: absolute;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 0.7rem 1rem;
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    backdrop-filter: blur(10px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4);
+    animation: float 4s ease-in-out infinite;
+  }
+
+  .chip-1 { top: -20px; right: 30px; animation-delay: 0s; }
+  .chip-2 { bottom: 20px; left: -30px; animation-delay: 1.5s; color: var(--accent2); border-color: rgba(0,200,255,0.3); }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes fadeInRight {
+    from { opacity: 0; transform: translateX(40px); }
+    to { opacity: 1; transform: translateX(0); }
+  }
+
+  /* Light mode refinements */
+  [data-theme="light"] .feature-card,
+  [data-theme="light"] .product-card,
+  [data-theme="light"] .build-card {
+    background: #ffffff;
+    box-shadow: 0 2px 16px rgba(0,60,120,0.08);
+  }
+  [data-theme="light"] .cta-banner {
+    background: linear-gradient(135deg, #ffffff 0%, rgba(0,138,75,0.07) 50%, #ffffff 100%);
+  }
+  [data-theme="light"] .hero-badge,
+  [data-theme="light"] .section-tag { background: rgba(0,138,75,0.08); }
+  [data-theme="light"] .chip { background: #ffffff; box-shadow: 0 8px 30px rgba(0,60,120,0.15); }
+  [data-theme="light"] .product-img,
+  [data-theme="light"] .build-card-img { background: #f5f9ff; }
+  [data-theme="light"] .learning-overlay-card { background: #ffffff; }
+
+  .marquee-strip {
+    background: var(--accent);
+    padding: 0.7rem 0;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+  }
+
+  .marquee-inner {
+    display: flex;
+    gap: 3rem;
+    animation: marquee 20s linear infinite;
+    white-space: nowrap;
+  }
+
+  .marquee-inner span {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #050a0e;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .marquee-inner span::before { content: '⬡ '; }
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* ─── SECTIONS COMMON ─── */
+  section { position: relative; z-index: 1; }
+
+  .section-header {
+    text-align: center;
+    margin-bottom: 3.5rem;
+  }
+
+  .section-tag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    background: rgba(0,255,136,0.08);
+    padding: 0.3rem 1rem;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+  }
+
+  .section-title {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.8rem, 3vw, 2.8rem);
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.5px;
+  }
+
+  .section-title span { color: var(--accent); }
+
+  .section-sub {
+    margin-top: 0.8rem;
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+  }
+
+  /* ─── FEATURES ─── */
+  .features {
+    padding: 6rem 5%;
+    background: var(--bg2);
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+
+  .feature-card {
+    background: var(--card-bg);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 2rem;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature-card:hover { border-color: var(--border); transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+  .feature-card:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 50px; height: 50px;
+    border-radius: 10px;
+    background: rgba(0,255,136,0.1);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.5rem;
+    margin-bottom: 1.2rem;
+    border: 1px solid var(--border);
+  }
+
+  .feature-card h3 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 0.7rem;
+  }
+
+  .feature-card p {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+  }
+
+  /* ─── PRODUCTS ─── */
+  .products {
+    padding: 6rem 5%;
+  }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.2rem;
+    margin-top: 3rem;
+  }
+
+  .product-card {
+    background: var(--bg2);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.3s;
+    cursor: pointer;
+  }
+
+  .product-card:hover { transform: translateY(-6px); border-color: var(--border); box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 20px rgba(0,255,136,0.1); }
+
+  .product-img {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+    overflow: hidden;
+    position: relative;
+  }
+
+  .product-img img {
+    width: 80%; height: 80%;
+    object-fit: contain;
+    transition: transform 0.3s;
+    filter: brightness(1.1) contrast(1.05);
+  }
+
+  .product-card:hover .product-img img { transform: scale(1.08); }
+
+  .product-badge {
+    position: absolute;
+    top: 0.7rem; left: 0.7rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    padding: 0.2rem 0.6rem;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+  }
+
+  .badge-new { background: var(--accent); color: #050a0e; }
+  .badge-hot { background: var(--accent3); color: #fff; }
+  .badge-popular { background: var(--accent2); color: #050a0e; }
+
+  .product-info { padding: 1rem 1.2rem 1.2rem; }
+
+  .product-info h4 {
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.4rem;
+    line-height: 1.3;
+  }
+
+  .product-cat {
+    font-size: 0.72rem;
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.8rem;
+  }
+
+  .product-footer {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .btn-shop {
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--accent);
+    padding: 0.35rem 0.8rem;
+    border-radius: 5px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .btn-shop:hover { background: var(--accent); color: #050a0e; box-shadow: var(--glow); }
+
+  /* ─── LEARNING SECTION ─── */
+  .learning {
+    padding: 6rem 5%;
+    background: var(--bg2);
+  }
+
+  .learning-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-top: 3rem;
+  }
+
+  .learning-visual {
+    position: relative;
+  }
+
+  .learning-img-main {
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--border);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+  }
+
+  .learning-img-main img {
+    width: 100%; display: block;
+    filter: saturate(1.2) brightness(0.9);
+  }
+
+  .learning-overlay-card {
+    position: absolute;
+    bottom: -20px; right: -20px;
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1.2rem 1.5rem;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  }
+
+  .ov-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+  }
+
+  .ov-val {
+    font-family: 'Orbitron', monospace;
+    font-size: 1.5rem;
+    font-weight: 900;
+    color: var(--accent2);
+  }
+
+  .ov-sub { font-size: 0.72rem; color: var(--text-muted); margin-top: 0.2rem; }
+
+  .learning-content h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.5rem, 2.5vw, 2.2rem);
+    font-weight: 700;
+    color: var(--text);
+    line-height: 1.2;
+    margin-bottom: 1.2rem;
+  }
+
+  .learning-content h2 span { color: var(--accent); }
+
+  .learning-content p {
+    color: var(--text-muted);
+    line-height: 1.7;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+  }
+
+  .curriculum-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8rem;
+    margin-bottom: 2rem;
+  }
+
+  .curriculum-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.9rem;
+    color: var(--text);
+  }
+
+  .curriculum-list li::before {
+    content: '▸';
+    color: var(--accent);
+    font-size: 0.9rem;
+    flex-shrink: 0;
+  }
+
+  /* ─── BUILD SECTION ─── */
+  .build {
+    padding: 6rem 5%;
+  }
+
+  .build-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-top: 3rem;
+  }
+
+  .build-card {
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+    transition: all 0.3s;
+    background: var(--bg2);
+  }
+
+  .build-card:hover { transform: translateY(-5px); border-color: rgba(0,200,255,0.3); box-shadow: 0 20px 40px rgba(0,0,0,0.3), var(--glow2); }
+
+  .build-card-img {
+    width: 100%;
+    aspect-ratio: 16/9;
+    overflow: hidden;
+    background: var(--bg3);
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .build-card-img img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: saturate(0.8) brightness(0.85);
+    transition: transform 0.3s;
+  }
+
+  .build-card:hover .build-card-img img { transform: scale(1.05); }
+
+  .build-card-body { padding: 1.5rem; }
+
+  .build-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    color: var(--accent2);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+  }
+
+  .build-card-body h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+    margin-bottom: 0.5rem;
+  }
+
+  .build-card-body p {
+    font-size: 0.83rem;
+    color: var(--text-muted);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+  }
+
+  .build-card-body p strong { color: var(--accent2); font-weight: 600; }
+
+  .build-link {
+    font-size: 0.8rem;
+    color: var(--accent2);
+    text-decoration: none;
+    font-family: 'JetBrains Mono', monospace;
+    display: flex; align-items: center; gap: 0.4rem;
+    transition: gap 0.2s;
+  }
+
+  .build-link:hover { gap: 0.8rem; }
+
+  /* ─── CTA BANNER ─── */
+  .cta-banner {
+    margin: 0 5% 6rem;
+    border-radius: 20px;
+    padding: 4rem;
+    background: linear-gradient(135deg, var(--bg2) 0%, rgba(0,255,136,0.08) 50%, var(--bg2) 100%);
+    border: 1px solid var(--border);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+  }
+
+  .cta-banner::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse, rgba(0,255,136,0.12) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-banner h2 {
+    font-family: 'Orbitron', monospace;
+    font-size: clamp(1.5rem, 3vw, 2.4rem);
+    font-weight: 900;
+    color: var(--text);
+    margin-bottom: 1rem;
+  }
+
+  .cta-banner h2 span { color: var(--accent); }
+
+  .cta-banner p {
+    color: var(--text-muted);
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+  }
+
+  .cta-actions { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    background: var(--bg2);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 4rem 5% 2rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+  }
+
+  .footer-brand p {
+    color: var(--text-muted);
+    font-size: 0.88rem;
+    line-height: 1.6;
+    margin-top: 1rem;
+    max-width: 260px;
+  }
+
+  .footer-col h5 {
+    font-family: 'Orbitron', monospace;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: 1px;
+    margin-bottom: 1.2rem;
+  }
+
+  .footer-col ul { list-style: none; display: flex; flex-direction: column; gap: 0.6rem; }
+
+  .footer-col ul a {
+    color: var(--text-muted);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: color 0.2s;
+  }
+
+  .footer-col ul a:hover { color: var(--accent); }
+
+  .footer-bottom {
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding-top: 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-bottom p {
+    color: var(--text-muted);
+    font-size: 0.78rem;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .footer-bottom span { color: var(--accent); }
+
+  /* ─── WHATSAPP FLOAT ─── */
+  .wa-float {
+    position: fixed;
+    bottom: 2rem; right: 2rem;
+    z-index: 200;
+    background: #25d366;
+    color: white;
+    padding: 1rem 1.5rem;
+    border-radius: 50px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.85rem;
+    display: flex; align-items: center; gap: 0.5rem;
+    box-shadow: 0 4px 20px rgba(37,211,102,0.4);
+    transition: all 0.2s;
+    animation: fadeInUp 1s 1s ease both;
+  }
+
+  .wa-float:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(37,211,102,0.5);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 1100px) {
+    .build-grid { grid-template-columns: repeat(2, 1fr); }
+  }  @media (max-width: 900px) {
+    .hero { grid-template-columns: 1fr; text-align: center; }
+    .hero-desc { margin-left: auto; margin-right: auto; }
+    .hero-actions { justify-content: center; }
+    .hero-stats { justify-content: center; }
+    .hero-visual { justify-self: center; }
+    .features-grid { grid-template-columns: 1fr 1fr; }
+    .products-grid { grid-template-columns: 1fr 1fr; }
+    .learning-layout { grid-template-columns: 1fr; }
+    .footer-grid { grid-template-columns: 1fr 1fr; }
+  }
+
+  @media (max-width: 600px) {
+    .features-grid, .build-grid, .products-grid { grid-template-columns: 1fr; }
+    nav ul { display: none; }
+    .cta-banner { padding: 2.5rem 1.5rem; }
+    .footer-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a href="#" class="logo">IoT<span>Saathi</span></a>
+  <div class="nav-right">
+    <ul>
+      <li><a href="#products">Shop</a></li>
+      <li><a href="#learning">Learn</a></li>
+      <li><a href="#build">Projects</a></li>
+      <li><a href="#contact">Support</a></li>
+    </ul>
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle theme">
+      <span class="toggle-icon" id="toggleIcon">🌙</span>
+      <div class="toggle-track"><div class="toggle-thumb"></div></div>
+      <span id="toggleLabel">Dark</span>
+    </button>
+    <a href="https://wa.me/919389860087" class="nav-cta" style="text-decoration:none; font-family:'JetBrains Mono',monospace; font-size:0.8rem; font-weight:700; color:#050a0e; background:var(--accent); padding:0.5rem 1.2rem; border-radius:4px; white-space:nowrap;">Buy Now →</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-content">
+    <div class="hero-badge">
+      <div class="badge-dot"></div>
+      India's IoT Learning & Components Hub
+    </div>
+    <h1>
+      <span class="line1">Build Smart.</span><br>
+      <span class="line2">Learn Fast.</span><br>
+      <span class="line3">Shop Easy.</span>
+    </h1>
+    <p class="hero-desc">
+      Code, circuit diagrams, IoT components & real expert support — all in one place. From your first Arduino blink to a full IoT product.
+    </p>
+    <div class="hero-actions">
+      <a href="#products" class="btn-primary">Shop Components</a>
+      <a href="learning.html" class="btn-secondary">Start Learning →</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat">
+        <div class="stat-num">500+</div>
+        <div class="stat-label">Components</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">50+</div>
+        <div class="stat-label">Projects</div>
+      </div>
+      <div class="stat">
+        <div class="stat-num">24/7</div>
+        <div class="stat-label">Support</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-visual">
+    <div class="chip chip-1">⬡ ESP8266 READY</div>
+    <div class="chip chip-2">⬡ ARDUINO UNO R3</div>
+    <div class="hero-card">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg" alt="Arduino IoT Board">
+      <div class="hero-card-overlay"></div>
+      <div class="hero-card-tag">▸ LIVE INVENTORY</div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-strip">
+  <div class="marquee-inner">
+    <span>Arduino</span>
+    <span>ESP8266</span>
+    <span>ESP32</span>
+    <span>Raspberry Pi</span>
+    <span>Sensors</span>
+    <span>Servo Motors</span>
+    <span>OLED Displays</span>
+    <span>Relay Modules</span>
+    <span>IoT Kits</span>
+    <span>Breadboards</span>
+    <span>Jumper Wires</span>
+    <span>Robotics</span>
+    <span>Arduino</span>
+    <span>ESP8266</span>
+    <span>ESP32</span>
+    <span>Raspberry Pi</span>
+    <span>Sensors</span>
+    <span>Servo Motors</span>
+    <span>OLED Displays</span>
+    <span>Relay Modules</span>
+    <span>IoT Kits</span>
+    <span>Breadboards</span>
+    <span>Jumper Wires</span>
+    <span>Robotics</span>
+  </div>
+</div>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-header">
+    <div class="section-tag">Why IoT Saathi</div>
+    <h2 class="section-title">Everything you need to <span>build IoT</span></h2>
+    <p class="section-sub">We combine learning resources, genuine components, and hands-on support so nothing blocks your build.</p>
+  </div>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">📦</div>
+      <h3>Genuine Components</h3>
+      <p>All components sourced and verified. Arduino, ESP8266, ESP32, sensors, motors, displays — ready to ship via E-Tron.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📚</div>
+      <h3>Step-by-Step Tutorials</h3>
+      <p>Comprehensive guides from basic LED blink to full smart home systems. Code + circuit diagrams included.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤝</div>
+      <h3>Real Expert Support</h3>
+      <p>Stuck on a circuit? Chat directly with our team on WhatsApp. We debug with you in real time.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🤖</div>
+      <h3>Robotics Projects</h3>
+      <p>Build line-following robots, obstacle avoiders, and robotic arms. Full kits and guides available.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🌐</div>
+      <h3>IoT Connectivity</h3>
+      <p>Learn Wi-Fi, MQTT, Blynk, ThingSpeak and more. Connect your devices to the internet the right way.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⚡</div>
+      <h3>Fast Delivery via E-Tron</h3>
+      <p>Order through our E-Tron store on WhatsApp and get components delivered quickly across India.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<section class="products" id="products">
+  <div class="section-header">
+    <div class="section-tag">Shop Components</div>
+    <h2 class="section-title">Popular <span>Electronics</span> Components</h2>
+    <p class="section-sub">Handpicked components for IoT builders. Order directly via our E-Tron WhatsApp store.</p>
+  </div>
+  <div class="products-grid">
+    <div class="product-card">
+      <div class="product-img">
+        <span class="product-badge badge-hot">HOT</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/3/38/Arduino_Uno_-_R3.jpg" alt="Arduino Uno R3">
+      </div>
+      <div class="product-info">
+        <div class="product-cat">Microcontroller</div>
+        <h4>Arduino Uno R3</h4>
+        <div class="product-footer">
+          <a href="https://wa.me/919389860087" class="btn-shop">Enquire →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img">
+        <span class="product-badge badge-new">NEW</span>
+        <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/4/4e/NodeMCU_DEVKIT_1.0.jpg/640px-NodeMCU_DEVKIT_1.0.jpg" alt="ESP8266 NodeMCU">
+      </div>
+      <div class="product-info">
+        <div class="product-cat">Wi-Fi Module</div>
+        <h4>ESP8266 NodeMCU</h4>
+        <div class="product-footer">
+          <a href="https://wa.me/919389860087" class="btn-shop">Enquire →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img">
+        <span class="product-badge badge-popular">TOP</span>
+        <img src="https://robocraze.com/cdn/shop/files/TIFKT0102.png?v=1758621963" alt="Robot Car Kit">
+      </div>
+      <div class="product-info">
+        <div class="product-cat">Robotics Kit</div>
+        <h4>4WD Robot Car Kit</h4>
+        <div class="product-footer">
+          <a href="https://wa.me/919389860087" class="btn-shop">Enquire →</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="product-card">
+      <div class="product-img">
+        <img src="https://cdn-icons-png.flaticon.com/512/2103/2103633.png" alt="IoT Starter Kit">
+      </div>
+      <div class="product-info">
+        <div class="product-cat">Beginner Kit</div>
+        <h4>IoT Starter Kit</h4>
+        <div class="product-footer">
+          <a href="https://wa.me/919389860087" class="btn-shop">Enquire →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="text-align:center; margin-top:2.5rem;">
+    <a href="https://wa.me/919389860087" class="btn-primary">View Full Catalogue on WhatsApp →</a>
+  </div>
+</section>
+
+<!-- LEARNING -->
+<section class="learning" id="learning">
+  <div class="section-header">
+    <div class="section-tag">Learning Hub</div>
+    <h2 class="section-title">Master <span>IoT</span> from Zero</h2>
+    <p class="section-sub">Structured curriculum built for students, hobbyists, and aspiring makers.</p>
+  </div>
+
+  <div class="learning-layout">
+    <div class="learning-visual">
+      <div class="learning-img-main">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Arduino_Logo.svg" alt="Arduino Learning" style="padding: 3rem; background: #0a1520; filter: none;">
+      </div>
+      <div class="learning-overlay-card">
+        <div class="ov-title">// TUTORIALS AVAILABLE</div>
+        <div class="ov-val">50+</div>
+        <div class="ov-sub">Free step-by-step guides</div>
+      </div>
+    </div>
+
+    <div class="learning-content">
+      <h2>From Blink to <span>Smart Home</span> — We Guide Every Step</h2>
+      <p>Our structured learning paths take you from absolute beginner to building real-world IoT products. Every tutorial comes with code, circuit diagrams, and component links.</p>
+
+      <ul class="curriculum-list">
+        <li>Arduino basics: pins, analog/digital, PWM</li>
+        <li>ESP8266 Wi-Fi: connecting to the internet</li>
+        <li>Sensors: DHT11, ultrasonic, IR, soil moisture</li>
+        <li>IoT platforms: Blynk, MQTT, ThingSpeak</li>
+        <li>Robotics: motor drivers, servo control, chassis</li>
+        <li>Final projects: smart home, weather station, robot</li>
+      </ul>
+
+      <a href="learning.html" class="btn-primary">Start Learning Free →</a>
+    </div>
+  </div>
+</section>
+
+<!-- BUILD / PROJECTS -->
+<section class="build" id="build">
+  <div class="section-header">
+    <div class="section-tag">Build Projects</div>
+    <h2 class="section-title">Real Projects. <span>Real Skills.</span></h2>
+    <p class="section-sub">Follow our project guides and build things you can actually use and show off.</p>
+  </div>
+
+  <div class="build-grid">
+
+    <div class="build-card">
+      <div class="build-card-img">
+        <img src="https://hackster.imgix.net/uploads/attachments/1153546/obstacle_avoiding-robot-using-arduino-and-ultrasonic-sensor_7tS4kDkz6N.jpg" alt="Obstacle Avoidance Robot">
+      </div>
+      <div class="build-card-body">
+        <div class="build-tag">// ROBOTICS</div>
+        <h3>Obstacle Avoidance Robot</h3>
+        <p><strong>Components:</strong> Arduino Uno, HC-SR04, L298N Motor Driver, DC Motors</p>
+        <p>Robot detects obstacles using ultrasonic sensor and automatically changes direction.</p>
+        <a href="https://en.wikipedia.org/wiki/Obstacle_avoidance" target="_blank" class="build-link">View Project →</a>
+      </div>
+    </div>
+
+    <div class="build-card">
+      <div class="build-card-img">
+        <img src="https://projects.arduinocontent.cc/cover-images/f0b7b8e4-3846-4115-baf8-01c38ba5d10a.png" alt="Smart Irrigation">
+      </div>
+      <div class="build-card-body">
+        <div class="build-tag">// AUTOMATION</div>
+        <h3>Smart Irrigation System</h3>
+        <p><strong>Components:</strong> Arduino Uno, Soil Moisture Sensor, Relay Module, Water Pump</p>
+        <p>Automatically waters plants when soil becomes dry.</p>
+        <a href="https://en.wikipedia.org/wiki/Smart_irrigation" target="_blank" class="build-link">View Project →</a>
+      </div>
+    </div>
+
+    <div class="build-card">
+      <div class="build-card-img">
+        <img src="https://content.instructables.com/FFF/V6B5/KQAX0D3U/FFFV6B5KQAX0D3U.jpg?auto=webp" alt="Smart Door Lock">
+      </div>
+      <div class="build-card-body">
+        <div class="build-tag">// SECURITY</div>
+        <h3>Smart Door Lock System</h3>
+        <p><strong>Components:</strong> Arduino Uno, Servo, RFID Module, Breadboard, Buzzer</p>
+        <p>RFID-based door lock that grants or denies access based on card authentication.</p>
+        <a href="https://en.wikipedia.org/wiki/Home_automation" target="_blank" class="build-link">View Project →</a>
+      </div>
+    </div>
+
+    <div class="build-card">
+      <div class="build-card-img">
+        <img src="https://content.instructables.com/FLJ/1VF0/IDFSFEQK/FLJ1VF0IDFSFEQK.jpg?auto=webp" alt="Fire Detection">
+      </div>
+      <div class="build-card-body">
+        <div class="build-tag">// SAFETY</div>
+        <h3>Fire Detection System</h3>
+        <p><strong>Components:</strong> Arduino Uno, Flame Sensor, Buzzer / Relay</p>
+        <p>Detects fire using a flame sensor and triggers an alarm instantly.</p>
+        <a href="https://en.wikipedia.org/wiki/Flame_detector" target="_blank" class="build-link">View Project →</a>
+      </div>
+    </div>
+
+    <div class="build-card">
+      <div class="build-card-img">
+        <img src="https://hacksterio.s3.amazonaws.com/uploads/attachments/685776/capture_PLF2nXCh0s.PNG" alt="Gas Detection">
+      </div>
+      <div class="build-card-body">
+        <div class="build-tag">// SAFETY</div>
+        <h3>Gas Leak Detection System</h3>
+        <p><strong>Components:</strong> Arduino Uno, MQ Gas Sensor, Buzzer</p>
+        <p>Detects harmful gases and activates a buzzer alarm when threshold is exceeded.</p>
+        <a href="https://en.wikipedia.org/wiki/Gas_detector" target="_blank" class="build-link">View Project →</a>
+      </div>
+    </div>
+
+    <div class="build-card">
+      <div class="build-card-img">
+        <img src="https://projects.arduinocontent.cc/cover-images/18820d21-4613-4325-860f-70b73097f1e0.jpg" alt="Arduino Radar">
+      </div>
+      <div class="build-card-body">
+        <div class="build-tag">// SENSING</div>
+        <h3>Arduino Radar System</h3>
+        <p><strong>Components:</strong> Arduino Uno, HC-SR04, SG90 Servo Motor</p>
+        <p>Ultrasonic sensor rotates on a servo to scan surroundings like a real radar display.</p>
+        <a href="https://en.wikipedia.org/wiki/Radar" target="_blank" class="build-link">View Project →</a>
+      </div>
+    </div>
+
+    <div class="build-card">
+      <div class="build-card-img">
+        <img src="https://projects.arduinocontent.cc/cover-images/20878ec4-043e-4bf2-8a63-42bec277c1bf.blob" alt="PIR Detection">
+      </div>
+      <div class="build-card-body">
+        <div class="build-tag">// SECURITY</div>
+        <h3>PIR Based Human Detection</h3>
+        <p><strong>Components:</strong> Arduino Uno, PIR Sensor, LED / Buzzer</p>
+        <p>Detects human motion using passive infrared sensing and triggers an alert.</p>
+        <a href="https://en.wikipedia.org/wiki/Passive_infrared_sensor" target="_blank" class="build-link">View Project →</a>
+      </div>
+    </div>
+
+    <div class="build-card">
+      <div class="build-card-img">
+        <img src="https://circuitdigest.com/sites/default/files/circuitdiagram_mic/Arduino-RCWL-0516-Module-Interfacing-Circuit-Diagram.png" alt="Microwave Detection">
+      </div>
+      <div class="build-card-body">
+        <div class="build-tag">// SENSING</div>
+        <h3>Microwave Human Detection</h3>
+        <p><strong>Components:</strong> Arduino Uno, RCWL-0516 Sensor, Buzzer</p>
+        <p>Detects motion using microwave radar — works through walls, longer range than PIR.</p>
+        <a href="https://en.wikipedia.org/wiki/Microwave_motion_sensor" target="_blank" class="build-link">View Project →</a>
+      </div>
+    </div>
+
+    <div class="build-card">
+      <div class="build-card-img" style="background: var(--bg3); padding: 1.5rem; display:flex; align-items:center; justify-content:center;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/8/87/Arduino_Logo.svg" alt="LDR Auto Light" style="object-fit:contain; max-height:140px; filter: hue-rotate(40deg);">
+      </div>
+      <div class="build-card-body">
+        <div class="build-tag">// AUTOMATION</div>
+        <h3>Auto Light ON using LDR</h3>
+        <p><strong>Components:</strong> Arduino Uno, LDR, 10kΩ Resistor, Relay Module</p>
+        <p>Automatically turns a light ON when it gets dark using an LDR voltage divider circuit.</p>
+        <a href="https://en.wikipedia.org/wiki/Photoresistor" target="_blank" class="build-link">View Project →</a>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CTA BANNER -->
+<div class="cta-banner" id="contact">
+  <h2>Ready to build something <span>amazing</span>?</h2>
+  <p>Order components, ask questions, or get project support — our team is available on WhatsApp right now.</p>
+  <div class="cta-actions">
+    <a href="https://wa.me/919389860087" class="btn-primary">💬 Chat on WhatsApp</a>
+    <a href="learning.html" class="btn-secondary">Explore Tutorials →</a>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="#" class="logo" style="font-size: 1.2rem;">IoT<span>Saathi</span></a>
+      <p>Your one-stop destination for IoT learning, electronics components, and expert project support across India.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Shop</h5>
+      <ul>
+        <li><a href="https://wa.me/919389860087">Arduino Boards</a></li>
+        <li><a href="https://wa.me/919389860087">ESP8266 / ESP32</a></li>
+        <li><a href="https://wa.me/919389860087">Sensors</a></li>
+        <li><a href="https://wa.me/919389860087">Robotics Kits</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Learn</h5>
+      <ul>
+        <li><a href="#">Arduino Basics</a></li>
+        <li><a href="#">ESP8266 Wi-Fi</a></li>
+        <li><a href="#">IoT Projects</a></li>
+        <li><a href="#">Robotics</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Support</h5>
+      <ul>
+        <li><a href="https://wa.me/919389860087">WhatsApp Us</a></li>
+        <li><a href="#">Project Help</a></li>
+        <li><a href="#">Order Status</a></li>
+        <li><a href="#">Component Guide</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>© 2026 <span>IoT Saathi</span>. All rights reserved. Copying the name violates copyright law.</p>
+    <p>Powered by <span>E-Tron</span> · Made with ❤️ for IoT builders</p>
+  </div>
+</footer>
+
+<!-- WHATSAPP FLOAT -->
+<a href="https://wa.me/919389860087" class="wa-float" target="_blank">
+  💬 Order via WhatsApp
+</a>
+
+<script>
+  // Theme toggle
+  const toggleBtn = document.getElementById('themeToggle');
+  const toggleIcon = document.getElementById('toggleIcon');
+  const toggleLabel = document.getElementById('toggleLabel');
+  const html = document.documentElement;
+
+  // Load saved preference
+  const saved = localStorage.getItem('iot-theme');
+  if (saved === 'light') applyLight();
+
+  toggleBtn.addEventListener('click', () => {
+    if (html.getAttribute('data-theme') === 'light') {
+      applyDark();
+    } else {
+      applyLight();
+    }
+  });
+
+  function applyLight() {
+    html.setAttribute('data-theme', 'light');
+    toggleIcon.textContent = '☀️';
+    toggleLabel.textContent = 'Light';
+    localStorage.setItem('iot-theme', 'light');
+  }
+
+  function applyDark() {
+    html.removeAttribute('data-theme');
+    toggleIcon.textContent = '🌙';
+    toggleLabel.textContent = 'Dark';
+    localStorage.setItem('iot-theme', 'dark');
+  }
+
+  // Smooth reveal on scroll
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(el => {
+      if (el.isIntersecting) {
+        el.target.style.opacity = '1';
+        el.target.style.transform = 'translateY(0)';
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.feature-card, .product-card, .build-card').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(30px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+  });
+
+  // Sticky nav
+  window.addEventListener('scroll', () => {
+    const nav = document.querySelector('nav');
+    nav.style.backdropFilter = window.scrollY > 50 ? 'blur(30px)' : 'blur(20px)';
+  });
+</script>
+</body>
+</html>
